@@ -6,8 +6,7 @@ subdomain="$2"
 
 get_record() {
     local full="$1.$domain"
-    # dig output -> find "ANSWER SECTION" -> read the next line -> extract record type + destination
-    dig "$full" | awk '/ANSWER SECTION/{getline; print}' | awk '{print $4, $5}'
+    host "$full" | awk '/has address/ {print "A", $4}'
 }
 
 print_output() {
@@ -24,12 +23,11 @@ print_output() {
 }
 
 if [ -z "$subdomain" ]; then
-    # Print all four in fixed order
     print_output "www"
     print_output "lb-01"
     print_output "web-01"
     print_output "web-02"
 else
-    # Only print the requested subdomain
     print_output "$subdomain"
 fi
+
